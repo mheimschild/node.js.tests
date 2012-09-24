@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+	<head>
+		<script src="/socket.io/socket.io.js"></script>
+		<script>
+		  var socket = io.connect('http://localhost');
+		  socket.on('log', function (data) {
+		    document.getElementById("message").value += data.message;
+		  });
+
+		  function clear_text_area() {
+		  	var message = document.getElementById("message");
+		  	message.value = "";
+		  }
+		</script>
+	</head>
+	<body>
+		<textarea id="message" cols="80" rows="10"></textarea>
+		<br>
+		<button onclick="clear_text_area()">Clear</button>
+	</body>
+</html>
