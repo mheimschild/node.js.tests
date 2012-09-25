@@ -21,14 +21,19 @@ var sockets = [];
 
 io.sockets.on('connection', function (socket) {
   sockets.push(socket);
+  socket.on('disconnect', function() {
+    for (var i = sockets.length; i--;) {
+      if (sockets[i] == socket) {
+        sockets.splice(i, 1);
+      }
+    }
+  })
 });
-
-// TODO: io disconection
 
 fs.open(process.argv[2], 'r', function(err, fd) {
     fs.watchFile(process.argv[2], function(c, p) {
         fs.read(fd, new Buffer(c.size - p.size), 0, c.size - p.size, p.size, function(err, br, b) {
-            console.log("file changed");
+            console.log("sockets: " + sockets.length);
             for (var i = sockets.length; i--;) {
                 sockets[i].emit('log', {message: b.toString()});
             }
