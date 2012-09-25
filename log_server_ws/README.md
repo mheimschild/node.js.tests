@@ -1,16 +1,22 @@
-Simple log server
-=================
+Simple web socket log server
+============================
 
-This server listening on port 12345 sends log file deltas through TCP socket.
+The server is listening on port 12345 and sending log file deltas through web socket.
 
 Server side
 -----------
+install socket.io
 
-just start "node log_server.js your_logfile.log"
+`npm install socket.io`
+
+and than start `node log_server.js your_logfile.log`
 
 Client side
 -----------
 
-and connect with telnet to your server "telnet your_server 12345"
+Open http://yourserver:12345/index.html in your web browser.
 
-Surely not sophisticated enough for productive usage but as a small and quick tool good enough.
+Tested with:
+* Google Chrome 21
+* IE9
+* Firefox 15
