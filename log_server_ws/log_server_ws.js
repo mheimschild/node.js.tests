@@ -32,10 +32,10 @@ io.sockets.on('connection', function (socket) {
 
 fs.open(process.argv[2], 'r', function(err, fd) {
     fs.watchFile(process.argv[2], function(c, p) {
-        fs.read(fd, new Buffer(c.size - p.size), 0, c.size - p.size, p.size, function(err, br, b) {
-            console.log("sockets: " + sockets.length);
+        console.log(c.size - p.size);
+        fs.createReadStream(process.argv[2], { start: p.size, end: c.size}).addListener("data", function(lines) {
             for (var i = sockets.length; i--;) {
-                sockets[i].emit('log', {message: b.toString()});
+                sockets[i].emit('log', {message: lines.toString()});
             }
         });
     })
