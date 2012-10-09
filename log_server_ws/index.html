@@ -1,22 +1,64 @@
 <!doctype html>
 <html>
 	<head>
-		<script src="/socket.io/socket.io.js"></script>
+		<script src="http://192.168.220.112:12345/socket.io/socket.io.js"></script>
 		<script>
 		  var socket = io.connect('http://localhost');
+          socket.on('init', function (data) {
+              var files_ul = document.getElementById("files");
+              files_ul.innerHTML = "";
+
+              for (file in data.message) {
+                  file_name = data.message[file];
+                  var new_li = document.createElement("li");
+                  var new_cb = document.createElement("input");
+                  new_cb.id = file_name;
+                  new_cb.type = "checkbox";
+                  new_cb.checked = "true";
+                  new_cb.onclick = function(e) {
+                      socket.emit(e.target.checked ? 'subscribe' : 'unsubscribe', {file: e.target.id});
+                  }
+                  new_li.appendChild(new_cb);
+                  new_li.appendChild(document.createTextNode(file_name));
+
+                  files_ul.appendChild(new_li);
+              }
+		  });
+		  
 		  socket.on('log', function (data) {
-		    document.getElementById("message").value += data.message;
+              var text_area = document.getElementById("message");
+		      text_area.value += data.message;
+
+              if (auto_scroll_enabled) {
+                  text_area.scrollTop = text_area.scrollHeight;
+              }
 		  });
 
 		  function clear_text_area() {
 		  	var message = document.getElementById("message");
 		  	message.value = "";
 		  }
+            
+          var auto_scroll_enabled = true;
+
+          function toggle_auto_scroll(e) {
+              auto_scroll_enabled = e.target.checked;
+          }
 		</script>
 	</head>
 	<body>
-		<textarea id="message" cols="80" rows="10"></textarea>
-		<br>
-		<button onclick="clear_text_area()">Clear</button>
+        <div style="width: 800px">
+            <div style="float: left; background-color: #add8e6;">
+                <textarea id="message" cols="80" rows="10"></textarea>
+                <br>
+                <button onclick="clear_text_area()">Clear</button>
+                <input id="auto-scroll" type="checkbox" checked onclick="toggle_auto_scroll(event)"> Autoscroll
+            </div>
+            <div style="float: right;">
+                Subscribe to:
+                <ul id="files" style="list-style: none;">
+                </ul>
+            </div>
+        </div>
 	</body>
 </html>
