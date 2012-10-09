@@ -1,7 +1,8 @@
 Simple web socket log server
 ============================
 
-The server is listening on port 12345 and sending log file deltas through web socket.
+The server is listening on port 12345 and sending log files deltas through web socket.
+Client is at the beginning subscribed for all files.
 
 Server side
 -----------
@@ -9,7 +10,7 @@ install socket.io
 
 `npm install socket.io`
 
-and than start `node log_server.js your_logfile.log`
+and than start `node log_server.js your_logfiles`
 
 Client side
 -----------
