@@ -28,21 +28,20 @@ var files = {
   },
 
   createWatchCallback: function(file_name) {
-    this.file_name = file_name;
     var that = this;
-
     return function(event, fn) {
+      var fn = file_name;
       if ("change" != event) {
         return;
       }
 
-      fs.stat(that.file_name, function(error, stat) {
-        var p_size = that.sizes[that.file_name];
+      fs.stat(fn, function(error, stat) {
+        var p_size = that.sizes[fn];
         var c_size = stat.size;
 
-        fs.createReadStream(that.file_name, { start: p_size > c_size ? 0 : p_size, end: c_size}).addListener("data", function(lines) {
-          that.publisher.publish(that.file_name, {message: lines.toString()});
-          that.sizes[that.file_name] = c_size;
+        fs.createReadStream(fn, { start: p_size > c_size ? 0 : p_size, end: c_size}).addListener("data", function(lines) {
+          that.publisher.publish(fn, {message: lines.toString()});
+          that.sizes[fn] = c_size;
         });
       });
     }
